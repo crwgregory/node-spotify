@@ -49,7 +49,7 @@ NAN_GETTER(NodeTrack::getArtists) {
       NodeArtist* nodeArtist = new NodeArtist(std::move(nodeTrack->track->artists()[i]));
       jsArtists->Set(Nan::New<Number>(i), nodeArtist->createInstance());
     } else {
-      jsArtists->Set(Nan::New<Number>(i), NanUndefined());
+      jsArtists->Set(Nan::New<Number>(i), Nan::Undefined());
     }
   }
   NanReturnValue(jsArtists);
@@ -87,15 +87,15 @@ NAN_GETTER(NodeTrack::isLoaded) {
 Handle<FunctionTemplate> NodeTrack::init() {
   NanEscapableScope();
   Handle<FunctionTemplate> constructorTemplate = NodeWrapped::init("Track");
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("name"), getName);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("link"), getLink);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("duration"), getDuration);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("artists"), getArtists);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("album"), getAlbum);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("starred"), getStarred, setStarred);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("popularity"), getPopularity);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("isLoaded"), isLoaded);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("availability"), getAvailability);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("name").ToLocalChecked(), getName);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("link").ToLocalChecked(), getLink);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("duration").ToLocalChecked(), getDuration);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("artists").ToLocalChecked(), getArtists);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("album").ToLocalChecked(), getAlbum);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("starred").ToLocalChecked(), getStarred, setStarred);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("popularity").ToLocalChecked(), getPopularity);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("isLoaded").ToLocalChecked(), isLoaded);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("availability").ToLocalChecked(), getAvailability);
   NanAssignPersistent(NodeTrack::constructorTemplate, constructorTemplate);
   return NanEscapeScope(constructorTemplate);
 }

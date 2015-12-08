@@ -40,10 +40,10 @@ NAN_METHOD(NodeAlbum::browse) {
 
     //Mutate the V8 object.
     Handle<Object> nodeAlbumV8 = NanObjectWrapHandle(nodeAlbum);
-    nodeAlbumV8->SetAccessor(Nan::New<String>("tracks"), getTracks);
-    nodeAlbumV8->SetAccessor(Nan::New<String>("review"), getReview);
-    nodeAlbumV8->SetAccessor(Nan::New<String>("copyrights"), getCopyrights);
-    nodeAlbumV8->SetAccessor(Nan::New<String>("artist"), getArtist);
+    nodeAlbumV8->SetAccessor(Nan::New<String>("tracks").ToLocalChecked(), getTracks);
+    nodeAlbumV8->SetAccessor(Nan::New<String>("review").ToLocalChecked(), getReview);
+    nodeAlbumV8->SetAccessor(Nan::New<String>("copyrights").ToLocalChecked(), getCopyrights);
+    nodeAlbumV8->SetAccessor(Nan::New<String>("artist").ToLocalChecked(), getArtist);
 
     nodeAlbum->album->browse();
   } else {
@@ -97,9 +97,9 @@ NAN_GETTER(NodeAlbum::isLoaded) {
 void NodeAlbum::init() {
   NanScope();
   Handle<FunctionTemplate> constructorTemplate = NodeWrapped::init("Album");
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("name"), getName);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("link"), getLink);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("isLoaded"), isLoaded);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("name").ToLocalChecked(), getName);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("link").ToLocalChecked(), getLink);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("isLoaded").ToLocalChecked(), isLoaded);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "getCoverBase64", getCoverBase64);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "browse", browse);
   NanAssignPersistent(NodeAlbum::constructorTemplate, constructorTemplate);

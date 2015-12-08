@@ -38,18 +38,18 @@ NAN_METHOD(NodePlayer::resume) {
 NAN_METHOD(NodePlayer::play) {
   NanScope();
   if(args.Length() < 1) {
-    return NanThrowError("play needs a track as its first argument.");
+    return Nan::ThrowError("play needs a track as its first argument.");
   }
   NodePlayer* nodePlayer = node::ObjectWrap::Unwrap<NodePlayer>(args.This());
   NodeTrack* nodeTrack = node::ObjectWrap::Unwrap<NodeTrack>(args[0]->ToObject());
   try {
     nodePlayer->player->play(nodeTrack->track);
   } catch (const TrackNotPlayableException& e) {
-    return NanThrowError("Track not playable");
+    return Nan::ThrowError("Track not playable");
   }
 #ifndef NODE_SPOTIFY_NATIVE_SOUND
   catch (const NoAudioHandlerException& e) {
-    return NanThrowError("No audio handler registered. Use spotify.useNodejsAudio().");
+    return Nan::ThrowError("No audio handler registered. Use spotify.useNodejsAudio().");
   }
 #endif
 
@@ -59,7 +59,7 @@ NAN_METHOD(NodePlayer::play) {
 NAN_METHOD(NodePlayer::seek) {
   NanScope();
   if(args.Length() < 1 || !args[0]->IsNumber()) {
-    return NanThrowError("seek needs an integer as its first argument.");
+    return Nan::ThrowError("seek needs an integer as its first argument.");
   }
   NodePlayer* nodePlayer = node::ObjectWrap::Unwrap<NodePlayer>(args.This());
   int second = args[0]->ToInteger()->Value();
@@ -76,10 +76,10 @@ NAN_GETTER(NodePlayer::getCurrentSecond) {
 NAN_METHOD(NodePlayer::on) {
   NanScope();
   if(args.Length() < 1 || !args[0]->IsObject()) {
-    return NanThrowError("on needs an object as its first argument.");
+    return Nan::ThrowError("on needs an object as its first argument.");
   }
   Handle<Object> callbacks = args[0]->ToObject();
-  Handle<String> endOfTrackKey = Nan::New<String>("endOfTrack");
+  Handle<String> endOfTrackKey = Nan::New<String>("endOfTrack").ToLocalChecked();
   SessionCallbacks::endOfTrackCallback = V8Utils::getFunctionFromObject(callbacks, endOfTrackKey);
   NanReturnUndefined();
 }
@@ -93,7 +93,7 @@ NAN_METHOD(NodePlayer::off) {
 void NodePlayer::init() {
   NanScope();
   Local<FunctionTemplate> constructorTemplate = Nan::New<FunctionTemplate>();
-  constructorTemplate->SetClassName(Nan::New<String>("Player"));
+  constructorTemplate->SetClassName(Nan::New<String>("Player").ToLocalChecked());
   constructorTemplate->InstanceTemplate()->SetInternalFieldCount(1);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "on", on);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "off", off);
@@ -103,6 +103,6 @@ void NodePlayer::init() {
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "resume", resume);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "stop", stop);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "seek", seek);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("currentSecond"), &getCurrentSecond);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("currentSecond").ToLocalChecked(), &getCurrentSecond);
   NanAssignPersistent(NodePlayer::constructorTemplate, constructorTemplate);
 }

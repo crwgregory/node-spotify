@@ -24,21 +24,21 @@ Application* application;
 static Handle<Object> getInternal() {
   Local<Object> internal = Nan::New<Object>();
   Local<Object> protos = Nan::New<Object>();
-  protos->Set(Nan::New<String>("Playlist"), NodePlaylist::getConstructor());
-  protos->Set(Nan::New<String>("Track"), NodeTrack::getConstructor());
-  protos->Set(Nan::New<String>("TrackExtended"), NodeTrackExtended::getConstructor());
-  protos->Set(Nan::New<String>("PlaylistContainer"), NodePlaylistContainer::getConstructor());
-  protos->Set(Nan::New<String>("Artist"), NodeArtist::getConstructor());
-  protos->Set(Nan::New<String>("Album"), NodeAlbum::getConstructor());
-  protos->Set(Nan::New<String>("User"), NodeUser::getConstructor());
-  protos->Set(Nan::New<String>("PlaylistFolder"), NodePlaylistFolder::getConstructor());
-  internal->Set(Nan::New<String>("protos"), protos);
+  protos->Set(Nan::New<String>("Playlist").ToLocalChecked(), NodePlaylist::getConstructor());
+  protos->Set(Nan::New<String>("Track").ToLocalChecked(), NodeTrack::getConstructor());
+  protos->Set(Nan::New<String>("TrackExtended").ToLocalChecked(), NodeTrackExtended::getConstructor());
+  protos->Set(Nan::New<String>("PlaylistContainer").ToLocalChecked(), NodePlaylistContainer::getConstructor());
+  protos->Set(Nan::New<String>("Artist").ToLocalChecked(), NodeArtist::getConstructor());
+  protos->Set(Nan::New<String>("Album").ToLocalChecked(), NodeAlbum::getConstructor());
+  protos->Set(Nan::New<String>("User").ToLocalChecked(), NodeUser::getConstructor());
+  protos->Set(Nan::New<String>("PlaylistFolder").ToLocalChecked(), NodePlaylistFolder::getConstructor());
+  internal->Set(Nan::New<String>("protos").ToLocalChecked(), protos);
 
   return internal;
 }
 
 NAN_METHOD(CreateNodespotify) {
-  NanScope();
+  Nan::HandleScope();
 
   //initiate the javascript ctors and prototypes
   NodePlaylist::init();
@@ -61,36 +61,37 @@ NAN_METHOD(CreateNodespotify) {
 #endif
 
   v8::Handle<v8::Object> options;
-  if(args.Length() < 1) {
+  if(info.Length() < 1) {
     options = Nan::New<Object>();
   } else {
-    if(!args[0]->IsObject()) {
-      return NanThrowError("Please provide an object to the node-spotify initializer function");
+    if(!info[0]->IsObject()) {
+      return Nan::ThrowError("Please provide an object to the node-spotify initializer function");
     }
-    options = args[0]->ToObject();
+    options = info[0]->ToObject();
   }
 
   NodeSpotify* nodeSpotify;
   try {
     nodeSpotify = new NodeSpotify(options);
   } catch (const FileException& e) {
-    return NanThrowError("Appkey file not found");
+    return Nan::ThrowError("Appkey file not found");
   } catch (const SessionCreationException& e) {
-    return NanThrowError(e.message.c_str());
+    return Nan::ThrowError(e.message.c_str());
   }
   v8::Handle<Object> spotifyObject = nodeSpotify->createInstance();
 
   //Set some fields on the nodeSpotify object
-  spotifyObject->Set(Nan::New<String>("Search"), NodeSearch::getConstructor());//TODO: this is ugly but didn't work when done in the NodeSpotify ctor
-  spotifyObject->Set(Nan::New<String>("internal"), getInternal());
+  spotifyObject->Set(Nan::New<String>("Search").ToLocalChecked(), NodeSearch::getConstructor());//TODO: this is ugly but didn't work when done in the NodeSpotify ctor
+  spotifyObject->Set(Nan::New<String>("internal").ToLocalChecked(), getInternal());
   application->player = std::make_shared<Player>();
   NodePlayer* nodePlayer = new NodePlayer(application->player);
-  spotifyObject->Set(Nan::New<String>("player"), nodePlayer->createInstance());
-  NanReturnValue(spotifyObject);
+  spotifyObject->Set(Nan::New<String>("player").ToLocalChecked(), nodePlayer->createInstance());
+  info.GetReturnValue().Set(spotifyObject);
 };
 
 static void init(v8::Handle<v8::Object> exports, v8::Handle<v8::Object> module) {
-  module->Set(Nan::New<String>("exports"), Nan::New<FunctionTemplate>(CreateNodespotify)->GetFunction());
+  Nan::SetMethod(module, "exports", CreateNodespotify);
+  //module->Set(Nan::New<String>("exports").ToLocalChecked(), Nan::New<FunctionTemplate>(CreateNodespotify)->GetFunction());
 }
 
 NODE_MODULE(nodespotify, init)

@@ -50,12 +50,12 @@ static void free_data(char* data, void* hint) {
  * @return true if the callback needs more data.
  */
 bool NodeAudioHandler::callMusicDeliveryCallback(audio_fifo_data_t* audioData) {
-  static Local<String> numberOfSamplesKey = Nan::New<String>("numberOfSamples");
-  static Local<String> sampleRateKey = Nan::New<String>("sampleRate");
-  static Local<String> channelsKey = Nan::New<String>("channels");
+  static Local<String> numberOfSamplesKey = Nan::New<String>("numberOfSamples").ToLocalChecked();
+  static Local<String> sampleRateKey = Nan::New<String>("sampleRate").ToLocalChecked();
+  static Local<String> channelsKey = Nan::New<String>("channels").ToLocalChecked();
 
   size_t size = audioData->numberOfSamples * sizeof(int16_t) * audioData->channels;
-  Local<Object> actualBuffer = Nan::NewBufferHandle((char*)audioData->samples, size, free_data, audioData);
+  Local<Object> actualBuffer = Nan::NewBuffer((char*)audioData->samples, size, free_data, audioData).ToLocalChecked();
   //node::Buffer *slowBuffer = node::Buffer::New((char*)audioData->samples, size, free_data, audioData);
 
   //Local<Object> globalObj = Context::GetCurrent()->Global();
@@ -68,7 +68,7 @@ bool NodeAudioHandler::callMusicDeliveryCallback(audio_fifo_data_t* audioData) {
   actualBuffer->Set(channelsKey, Nan::New<Integer>(audioData->channels));
 
   int argc = 2;
-  Handle<Value> argv[] = { NanUndefined(), actualBuffer };
+  Handle<Value> argv[] = { Nan::Undefined(), actualBuffer };
   Handle<Value> bufferFilled = musicDeliveryCallback->Call(argc, argv);
   return bufferFilled->ToBoolean()->BooleanValue();
 }
@@ -85,12 +85,11 @@ void NodeAudioHandler::setStopped(bool _stopped) {
 }
 
 NAN_METHOD(NodeAudioHandler::setNeedMoreData) {
-  NanScope();
-  if(args.Length() < 1 || !args[0]->IsBoolean()) {
-    return NanThrowError("setNeedMoreData needs a boolean as its first argument.");
+  Nan::HandleScope();
+  if(info.Length() < 1 || !info[0]->IsBoolean()) {
+    return Nan::ThrowError("setNeedMoreData needs a boolean as its first argument.");
   }
   NodeAudioHandler* audioHandler = static_cast<NodeAudioHandler*>(application->audioHandler.get());
-  bool needMoreData = args[0]->ToBoolean()->BooleanValue();
+  bool needMoreData = info[0]->ToBoolean()->BooleanValue();
   audioHandler->needMoreData = needMoreData;
-  NanReturnUndefined();
 }

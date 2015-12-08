@@ -34,11 +34,11 @@ NAN_METHOD(NodeArtist::browse) {
 
     //Mutate the V8 object.
     Handle<Object> nodeArtistV8 = NanObjectWrapHandle(nodeArtist);
-    nodeArtistV8->SetAccessor(Nan::New<String>("tracks"), getTracks);
-    nodeArtistV8->SetAccessor(Nan::New<String>("tophitTracks"), getTophitTracks);
-    nodeArtistV8->SetAccessor(Nan::New<String>("albums"), getAlbums);
-    nodeArtistV8->SetAccessor(Nan::New<String>("similarArtists"), getSimilarArtists);
-    nodeArtistV8->SetAccessor(Nan::New<String>("biography"), getBiography);
+    nodeArtistV8->SetAccessor(Nan::New<String>("tracks").ToLocalChecked(), getTracks);
+    nodeArtistV8->SetAccessor(Nan::New<String>("tophitTracks").ToLocalChecked(), getTophitTracks);
+    nodeArtistV8->SetAccessor(Nan::New<String>("albums").ToLocalChecked(), getAlbums);
+    nodeArtistV8->SetAccessor(Nan::New<String>("similarArtists").ToLocalChecked(), getSimilarArtists);
+    nodeArtistV8->SetAccessor(Nan::New<String>("biography").ToLocalChecked(), getBiography);
     //TODO: portraits
 
     nodeArtist->artist->browse(artistbrowseType);
@@ -112,9 +112,9 @@ NAN_GETTER(NodeArtist::isLoaded) {
 void NodeArtist::init() {
   NanScope();
   Handle<FunctionTemplate> constructorTemplate = NodeWrapped::init("Artist");
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("name"), getName);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("link"), getLink);
-  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("isLoaded"), isLoaded);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("name").ToLocalChecked(), getName);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("link").ToLocalChecked(), getLink);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("isLoaded").ToLocalChecked(), isLoaded);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "browse", browse);
   NanAssignPersistent(NodeArtist::constructorTemplate, constructorTemplate);
 }
