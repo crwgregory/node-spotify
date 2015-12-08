@@ -8,7 +8,7 @@ using namespace v8;
 
 extern Application* application;
 
-NodeAudioHandler::NodeAudioHandler(std::unique_ptr<NanCallback> _musicDeliveryCallback) :
+NodeAudioHandler::NodeAudioHandler(std::unique_ptr<Nan::Callback> _musicDeliveryCallback) :
   AudioHandler(), musicDeliveryCallback(std::move(_musicDeliveryCallback)), needMoreData(true), stopped(false), musicTimerRepeat(20) {
   uv_timer_init(uv_default_loop(), &musicTimer);
   musicTimer.data = this;
@@ -50,12 +50,12 @@ static void free_data(char* data, void* hint) {
  * @return true if the callback needs more data.
  */
 bool NodeAudioHandler::callMusicDeliveryCallback(audio_fifo_data_t* audioData) {
-  static Local<String> numberOfSamplesKey = NanNew<String>("numberOfSamples");
-  static Local<String> sampleRateKey = NanNew<String>("sampleRate");
-  static Local<String> channelsKey = NanNew<String>("channels");
+  static Local<String> numberOfSamplesKey = Nan::New<String>("numberOfSamples");
+  static Local<String> sampleRateKey = Nan::New<String>("sampleRate");
+  static Local<String> channelsKey = Nan::New<String>("channels");
 
   size_t size = audioData->numberOfSamples * sizeof(int16_t) * audioData->channels;
-  Local<Object> actualBuffer = NanNewBufferHandle((char*)audioData->samples, size, free_data, audioData);
+  Local<Object> actualBuffer = Nan::NewBufferHandle((char*)audioData->samples, size, free_data, audioData);
   //node::Buffer *slowBuffer = node::Buffer::New((char*)audioData->samples, size, free_data, audioData);
 
   //Local<Object> globalObj = Context::GetCurrent()->Global();
@@ -63,9 +63,9 @@ bool NodeAudioHandler::callMusicDeliveryCallback(audio_fifo_data_t* audioData) {
   //Handle<Value> constructorArgs[3] = { slowBuffer->handle_, Integer::New(size), Integer::New(0)};
   //Handle<Object> actualBuffer = ctor->NewInstance(3, constructorArgs);
 
-  actualBuffer->Set(numberOfSamplesKey, NanNew<Integer>(audioData->numberOfSamples));
-  actualBuffer->Set(sampleRateKey, NanNew<Integer>(audioData->sampleRate));
-  actualBuffer->Set(channelsKey, NanNew<Integer>(audioData->channels));
+  actualBuffer->Set(numberOfSamplesKey, Nan::New<Integer>(audioData->numberOfSamples));
+  actualBuffer->Set(sampleRateKey, Nan::New<Integer>(audioData->sampleRate));
+  actualBuffer->Set(channelsKey, Nan::New<Integer>(audioData->channels));
 
   int argc = 2;
   Handle<Value> argv[] = { NanUndefined(), actualBuffer };

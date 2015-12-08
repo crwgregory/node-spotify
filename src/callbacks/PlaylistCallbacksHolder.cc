@@ -16,7 +16,7 @@ PlaylistCallbacksHolder::~PlaylistCallbacksHolder() {
   delete playlistCallbacks;
 }
 
-void PlaylistCallbacksHolder::call(std::unique_ptr<NanCallback>& callback, std::initializer_list<Handle<Value>> args) {
+void PlaylistCallbacksHolder::call(std::unique_ptr<Nan::Callback>& callback, std::initializer_list<Handle<Value>> args) {
   unsigned int argc = args.size();
   Handle<Value>* argv = const_cast<Handle<Value>*>(args.begin());
   callback->Call(argc, argv);
@@ -29,28 +29,28 @@ void PlaylistCallbacksHolder::playlistRenamed(sp_playlist* spPlaylist, void* use
 
 void PlaylistCallbacksHolder::tracksAdded(sp_playlist* spPlaylist, sp_track *const *tracks, int num_tracks, int position, void *userdata) {
   auto holder = static_cast<PlaylistCallbacksHolder*>(userdata);
-  Handle<Array> nodeTracks = NanNew<Array>(num_tracks);
+  Handle<Array> nodeTracks = Nan::New<Array>(num_tracks);
   for(int i = 0; i < num_tracks; i++) {
     NodeTrack* nodeTrackExtended = new NodeTrackExtended(std::make_shared<TrackExtended>(tracks[i], spPlaylist, position + i));
-    nodeTracks->Set(NanNew<Number>(i), nodeTrackExtended->createInstance());
+    nodeTracks->Set(Nan::New<Number>(i), nodeTrackExtended->createInstance());
   }
-  holder->call(holder->tracksAddedCallback, { NanUndefined(), NanObjectWrapHandle(holder->userdata), nodeTracks, NanNew<Number>(position) });
+  holder->call(holder->tracksAddedCallback, { NanUndefined(), NanObjectWrapHandle(holder->userdata), nodeTracks, Nan::New<Number>(position) });
 }
 
 void PlaylistCallbacksHolder::tracksMoved(sp_playlist* spPlaylist, const int* tracks, int num_tracks, int new_position, void *userdata) {
   auto holder = static_cast<PlaylistCallbacksHolder*>(userdata);
-  Handle<Array> movedTrackIndices = NanNew<Array>(num_tracks);
+  Handle<Array> movedTrackIndices = Nan::New<Array>(num_tracks);
   for(int i = 0; i < num_tracks; i++) {
-    movedTrackIndices->Set(NanNew<Number>(i), NanNew<Number>(tracks[i]));
+    movedTrackIndices->Set(Nan::New<Number>(i), Nan::New<Number>(tracks[i]));
   }
-  holder->call(holder->tracksMovedCallback, { NanUndefined(), NanObjectWrapHandle(holder->userdata), movedTrackIndices, NanNew<Number>(new_position) });
+  holder->call(holder->tracksMovedCallback, { NanUndefined(), NanObjectWrapHandle(holder->userdata), movedTrackIndices, Nan::New<Number>(new_position) });
 }
 
 void PlaylistCallbacksHolder::tracksRemoved(sp_playlist* spPlaylist, const int *tracks, int num_tracks, void *userdata) {
   auto holder = static_cast<PlaylistCallbacksHolder*>(userdata);
-  Handle<Array> removedTrackIndexes = NanNew<Array>(num_tracks);
+  Handle<Array> removedTrackIndexes = Nan::New<Array>(num_tracks);
   for(int i = 0; i < num_tracks; i++) {
-    removedTrackIndexes->Set(NanNew<Number>(i), NanNew<Number>(tracks[i]));
+    removedTrackIndexes->Set(Nan::New<Number>(i), Nan::New<Number>(tracks[i]));
   }
   holder->call(holder->tracksRemovedCallback, { NanUndefined(), NanObjectWrapHandle(holder->userdata), removedTrackIndexes });
 }
@@ -59,17 +59,17 @@ void PlaylistCallbacksHolder::trackCreatedChanged(sp_playlist* spPlaylist, int p
   auto holder = static_cast<PlaylistCallbacksHolder*>(userdata);
   double date = (double)when * 1000;
   NodeUser* nodeUser = new NodeUser(std::unique_ptr<User>(new User(spUser)));
-  holder->call(holder->trackCreatedChangedCallback, { NanUndefined(), NanObjectWrapHandle(holder->userdata), NanNew<Integer>(position), NanObjectWrapHandle(nodeUser), NanNew<Date>(date) });
+  holder->call(holder->trackCreatedChangedCallback, { NanUndefined(), NanObjectWrapHandle(holder->userdata), Nan::New<Integer>(position), NanObjectWrapHandle(nodeUser), Nan::New<Date>(date) });
 }
 
 void PlaylistCallbacksHolder::trackSeenChanged(sp_playlist* spPlaylist, int position, bool seen, void* userdata) {
   auto holder = static_cast<PlaylistCallbacksHolder*>(userdata);
-  holder->call(holder->trackSeenChangedCallback, { NanUndefined(), NanObjectWrapHandle(holder->userdata), NanNew<Integer>(position), NanNew<Boolean>(seen) });
+  holder->call(holder->trackSeenChangedCallback, { NanUndefined(), NanObjectWrapHandle(holder->userdata), Nan::New<Integer>(position), Nan::New<Boolean>(seen) });
 }
 
 void PlaylistCallbacksHolder::trackMessageChanged(sp_playlist* spPlaylist, int position, const char* message, void* userdata) {
   auto holder = static_cast<PlaylistCallbacksHolder*>(userdata);
-  holder->call(holder->trackMessageChangedCallback, { NanUndefined(), NanObjectWrapHandle(holder->userdata), NanNew<Integer>(position), NanNew<String>(message) });
+  holder->call(holder->trackMessageChangedCallback, { NanUndefined(), NanObjectWrapHandle(holder->userdata), Nan::New<Integer>(position), Nan::New<String>(message) });
 }
 
 void PlaylistCallbacksHolder::setCallbacks() {

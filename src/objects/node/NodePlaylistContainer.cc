@@ -22,7 +22,7 @@ NAN_GETTER(NodePlaylistContainer::getOwner) {
 NAN_GETTER(NodePlaylistContainer::getNumPlaylists) {
   NanScope();
   NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
-  NanReturnValue(NanNew<Integer>(nodePlaylistContainer->playlistContainer->numPlaylists()));
+  NanReturnValue(Nan::New<Integer>(nodePlaylistContainer->playlistContainer->numPlaylists()));
 }
 
 NAN_METHOD(NodePlaylistContainer::getPlaylist) {
@@ -110,7 +110,7 @@ NAN_METHOD(NodePlaylistContainer::movePlaylist) {
 NAN_GETTER(NodePlaylistContainer::isLoaded) {
   NanScope();
   NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
-  NanReturnValue(NanNew<Boolean>(nodePlaylistContainer->playlistContainer->isLoaded()));
+  NanReturnValue(Nan::New<Boolean>(nodePlaylistContainer->playlistContainer->isLoaded()));
 }
 
 NAN_METHOD(NodePlaylistContainer::on) {
@@ -120,9 +120,9 @@ NAN_METHOD(NodePlaylistContainer::on) {
   }
   NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
   Handle<Object> callbacks = args[0]->ToObject();
-  Handle<String> playlistAddedKey = NanNew<String>("playlistAdded");
-  Handle<String> playlistMovedKey = NanNew<String>("playlistMoved");
-  Handle<String> playlistRemovedKey = NanNew<String>("playlistRemoved");
+  Handle<String> playlistAddedKey = Nan::New<String>("playlistAdded");
+  Handle<String> playlistMovedKey = Nan::New<String>("playlistMoved");
+  Handle<String> playlistRemovedKey = Nan::New<String>("playlistRemoved");
   nodePlaylistContainer->playlistContainerCallbacksHolder.playlistAddedCallback = V8Utils::getFunctionFromObject(callbacks, playlistAddedKey);
   nodePlaylistContainer->playlistContainerCallbacksHolder.playlistMovedCallback = V8Utils::getFunctionFromObject(callbacks, playlistMovedKey);
   nodePlaylistContainer->playlistContainerCallbacksHolder.playlistRemovedCallback = V8Utils::getFunctionFromObject(callbacks, playlistRemovedKey);
@@ -139,14 +139,14 @@ NAN_METHOD(NodePlaylistContainer::off) {
 
 void NodePlaylistContainer::init() {
   NanScope();
-  Local<FunctionTemplate> constructorTemplate = NanNew<FunctionTemplate>();
-  constructorTemplate->SetClassName(NanNew<String>("PlaylistContainer"));
+  Local<FunctionTemplate> constructorTemplate = Nan::New<FunctionTemplate>();
+  constructorTemplate->SetClassName(Nan::New<String>("PlaylistContainer"));
   constructorTemplate->InstanceTemplate()->SetInternalFieldCount(1);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "on", on);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "off", off);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("owner"), getOwner);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("numPlaylists"), getNumPlaylists);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("isLoaded"), isLoaded);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("owner"), getOwner);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("numPlaylists"), getNumPlaylists);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("isLoaded"), isLoaded);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "getPlaylist", getPlaylist);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "addPlaylist", addPlaylist);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "addFolder", addFolder);

@@ -15,7 +15,7 @@ PlaylistContainerCallbacksHolder::~PlaylistContainerCallbacksHolder() {
   delete playlistContainerCallbacks;
 }
 
-void PlaylistContainerCallbacksHolder::call(std::unique_ptr<NanCallback>& callback, std::initializer_list<Handle<Value>> args) {
+void PlaylistContainerCallbacksHolder::call(std::unique_ptr<Nan::Callback>& callback, std::initializer_list<Handle<Value>> args) {
   unsigned int argc = args.size();
   Handle<Value>* argv = const_cast<Handle<Value>*>(args.begin());
   callback->Call(argc, argv);
@@ -41,16 +41,16 @@ void PlaylistContainerCallbacksHolder::playlistAdded(sp_playlistcontainer* pc, s
   } else {
     return;
   }
-  holder->call(holder->playlistAddedCallback, {NanUndefined(), playlistV8, NanNew<Number>(position)});
+  holder->call(holder->playlistAddedCallback, {NanUndefined(), playlistV8, Nan::New<Number>(position)});
 }
 
 void PlaylistContainerCallbacksHolder::playlistRemoved(sp_playlistcontainer* pc, sp_playlist* spPlaylist, int position, void *userdata) {
   auto holder = static_cast<PlaylistContainerCallbacksHolder*>(userdata);
   node::ObjectWrap* nodePlaylist = nullptr; //FIXME what??
   if(nodePlaylist != nullptr) {
-    holder->call(holder->playlistRemovedCallback, {NanUndefined(), NanNew<Number>(position), NanObjectWrapHandle(nodePlaylist)});
+    holder->call(holder->playlistRemovedCallback, {NanUndefined(), Nan::New<Number>(position), NanObjectWrapHandle(nodePlaylist)});
   } else {
-    holder->call(holder->playlistRemovedCallback, {NanUndefined(), NanNew<Number>(position)});
+    holder->call(holder->playlistRemovedCallback, {NanUndefined(), Nan::New<Number>(position)});
   }
 }
 
@@ -58,9 +58,9 @@ void PlaylistContainerCallbacksHolder::playlistMoved(sp_playlistcontainer* pc, s
   auto holder = static_cast<PlaylistContainerCallbacksHolder*>(userdata);
   node::ObjectWrap* nodePlaylist = nullptr; //FIXME what?
   if(nodePlaylist != nullptr) {
-    holder->call(holder->playlistMovedCallback, {NanUndefined(), NanNew<Number>(position), NanNew<Number>(new_position), NanObjectWrapHandle(nodePlaylist)});
+    holder->call(holder->playlistMovedCallback, {NanUndefined(), Nan::New<Number>(position), Nan::New<Number>(new_position), NanObjectWrapHandle(nodePlaylist)});
   } else {
-    holder->call(holder->playlistMovedCallback, {NanUndefined(), NanNew<Number>(position), NanNew<Number>(new_position)});
+    holder->call(holder->playlistMovedCallback, {NanUndefined(), Nan::New<Number>(position), Nan::New<Number>(new_position)});
   }
 }
 

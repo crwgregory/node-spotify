@@ -20,7 +20,7 @@ Handle<Object> NodeTrackExtended::createInstance() {
   Same for this... we need to rewrite so NodeTrackExtended::constructor is used and not NodeTrack::constructor.
 **/
 Handle<Function> NodeTrackExtended::getConstructor() {
-  return NanNew(constructorTemplate)->GetFunction();
+  return Nan::New(constructorTemplate)->GetFunction();
 }
 
 NAN_GETTER(NodeTrackExtended::getCreator) {
@@ -37,7 +37,7 @@ NAN_GETTER(NodeTrackExtended::getCreator) {
 NAN_GETTER(NodeTrackExtended::getSeen) {
   NanScope();
   NodeTrackExtended* nodeTrackExtended = node::ObjectWrap::Unwrap<NodeTrackExtended>(args.This());
-  NanReturnValue(NanNew<Boolean>(nodeTrackExtended->trackExtended->seen()));
+  NanReturnValue(Nan::New<Boolean>(nodeTrackExtended->trackExtended->seen()));
 }
 
 NAN_SETTER(NodeTrackExtended::setSeen) {
@@ -49,13 +49,13 @@ NAN_SETTER(NodeTrackExtended::setSeen) {
 NAN_GETTER(NodeTrackExtended::getCreateTime) {
   NanScope();
   NodeTrackExtended* nodeTrackExtended = node::ObjectWrap::Unwrap<NodeTrackExtended>(args.This());
-  NanReturnValue(NanNew<Date>(nodeTrackExtended->trackExtended->createTime() * 1000));
+  NanReturnValue(Nan::New<Date>(nodeTrackExtended->trackExtended->createTime() * 1000));
 }
 
 NAN_GETTER(NodeTrackExtended::getMessage) {
   NanScope();
   NodeTrackExtended* nodeTrackExtended = node::ObjectWrap::Unwrap<NodeTrackExtended>(args.This());
-  NanReturnValue(NanNew<String>(nodeTrackExtended->trackExtended->message().c_str()));
+  NanReturnValue(Nan::New<String>(nodeTrackExtended->trackExtended->message().c_str()));
 }
 
 void NodeTrackExtended::init() {
@@ -63,9 +63,9 @@ void NodeTrackExtended::init() {
   Handle<FunctionTemplate> constructorTemplate = NodeWrapped::init("TrackExtended");
   Handle<FunctionTemplate> nodeTrackTemplate = NodeTrack::init();
   constructorTemplate->Inherit(nodeTrackTemplate);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("creator"), getCreator);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("seen"), getSeen, setSeen);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("createTime"), getCreateTime);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("message"), getMessage);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("creator"), getCreator);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("seen"), getSeen, setSeen);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("createTime"), getCreateTime);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("message"), getMessage);
   NanAssignPersistent(NodeTrackExtended::constructorTemplate, constructorTemplate);
 }
