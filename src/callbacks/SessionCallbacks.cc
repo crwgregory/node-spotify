@@ -86,7 +86,7 @@ void SessionCallbacks::metadata_updated(sp_session* session) {
 void SessionCallbacks::loggedIn(sp_session* session, sp_error error) {
   if(SP_ERROR_OK != error) {
     unsigned int argc = 1;
-    v8::Handle<v8::Value> argv[1] = { NanError(sp_error_message(error)) };
+    v8::Handle<v8::Value> argv[1] = { Nan::Error(sp_error_message(error)) };
     loginCallback->Call( argc, argv );
     return;
   }

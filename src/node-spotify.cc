@@ -24,14 +24,14 @@ Application* application;
 static Handle<Object> getInternal() {
   Local<Object> internal = Nan::New<Object>();
   Local<Object> protos = Nan::New<Object>();
-  protos->Set(Nan::New<String>("Playlist").ToLocalChecked(), NodePlaylist::getConstructor());
-  protos->Set(Nan::New<String>("Track").ToLocalChecked(), NodeTrack::getConstructor());
-  protos->Set(Nan::New<String>("TrackExtended").ToLocalChecked(), NodeTrackExtended::getConstructor());
-  protos->Set(Nan::New<String>("PlaylistContainer").ToLocalChecked(), NodePlaylistContainer::getConstructor());
-  protos->Set(Nan::New<String>("Artist").ToLocalChecked(), NodeArtist::getConstructor());
-  protos->Set(Nan::New<String>("Album").ToLocalChecked(), NodeAlbum::getConstructor());
-  protos->Set(Nan::New<String>("User").ToLocalChecked(), NodeUser::getConstructor());
-  protos->Set(Nan::New<String>("PlaylistFolder").ToLocalChecked(), NodePlaylistFolder::getConstructor());
+  protos->Set(Nan::New<String>("Playlist").ToLocalChecked(), Nan::New(NodePlaylist::getConstructor()));
+  protos->Set(Nan::New<String>("Track").ToLocalChecked(), Nan::New(NodeTrack::getConstructor()));
+  protos->Set(Nan::New<String>("TrackExtended").ToLocalChecked(), Nan::New(NodeTrackExtended::getConstructor()));
+  protos->Set(Nan::New<String>("PlaylistContainer").ToLocalChecked(), Nan::New(NodePlaylistContainer::getConstructor()));
+  protos->Set(Nan::New<String>("Artist").ToLocalChecked(), Nan::New(NodeArtist::getConstructor()));
+  protos->Set(Nan::New<String>("Album").ToLocalChecked(), Nan::New(NodeAlbum::getConstructor()));
+  protos->Set(Nan::New<String>("User").ToLocalChecked(), Nan::New(NodeUser::getConstructor()));
+  protos->Set(Nan::New<String>("PlaylistFolder").ToLocalChecked(), Nan::New(NodePlaylistFolder::getConstructor()));
   internal->Set(Nan::New<String>("protos").ToLocalChecked(), protos);
 
   return internal;

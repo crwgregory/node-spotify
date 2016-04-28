@@ -12,21 +12,21 @@
  * A class used as a base class for wrapping objects to node objects.
  **/
 template <class T>
-class NodeWrapped : public node::ObjectWrap {
+class NodeWrapped : public Nan::ObjectWrap {
 public:
   ~NodeWrapped() {}
   
   virtual v8::Handle<v8::Object> createInstance() {
-    v8::Local<v8::Object> object = getConstructor()->NewInstance();
+    v8::Local<v8::Object> object = Nan::New(constructor)->NewInstance();
     this->Wrap(object);
     return object;
   }
 
-  static v8::Handle<v8::Function> getConstructor() {
-    return Nan::New(constructorTemplate)->GetFunction();
+  static Nan::Persistent<v8::Function> getConstructor() {
+    return constructor; 
   }
 protected:
-  static v8::Persistent<v8::FunctionTemplate> constructorTemplate;
+  static Nan::Persistent<v8::Function> constructor;
 
   /**
    * Basic init method for a wrapped node object.
@@ -41,5 +41,5 @@ protected:
 };
 
 //The constructor template must be static per template instance not for all NodeWrapped subclasses.
-template <class T> v8::Persistent<v8::FunctionTemplate> NodeWrapped<T>::constructorTemplate;
+template <class T> Nan::Persistent<v8::Function> NodeWrapped<T>::constructor;
 #endif

@@ -2,7 +2,7 @@
 #include "NodeUser.h"
 
 //Since NodeWrapped uses a templating technique to assign the static constructor to each childclass we need to improvise here.
-Persistent<FunctionTemplate> NodeTrackExtended::constructorTemplate;
+Nan::Persistent<Function> NodeTrackExtended::constructor;
 
 NodeTrackExtended::NodeTrackExtended(std::shared_ptr<TrackExtended> _trackExtended) : NodeTrack(_trackExtended), trackExtended(_trackExtended) {
 }
@@ -67,5 +67,5 @@ void NodeTrackExtended::init() {
   constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("seen").ToLocalChecked(), getSeen, setSeen);
   constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("createTime").ToLocalChecked(), getCreateTime);
   constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("message").ToLocalChecked(), getMessage);
-  NanAssignPersistent(NodeTrackExtended::constructorTemplate, constructorTemplate);
+  constructor.Reset(NodeTrackExtended::constructor, Nan::GetFunction(constructorTemplate).ToLocalChecked());
 }

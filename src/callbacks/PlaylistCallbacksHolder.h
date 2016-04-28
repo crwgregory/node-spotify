@@ -1,8 +1,6 @@
 #ifndef _SPOTIFY_SERVICE_PLAYLIST_CALLBACKS_HOLDER_H
 #define _SPOTIFY_SERVICE_PLAYLIST_CALLBACKS_HOLDER_H
 
-#include <node.h>
-
 #include <libspotify/api.h>
 #include <nan.h>
 #include <initializer_list>
@@ -12,12 +10,12 @@ using namespace v8;
 
 class PlaylistCallbacksHolder {
 private:
-  node::ObjectWrap* userdata;
+  Nan::ObjectWrap* userdata;
   sp_playlist* playlist;
   sp_playlist_callbacks* playlistCallbacks;
   void call(std::unique_ptr<Nan::Callback>& callback, std::initializer_list<Handle<Value>> args);
 public:
-  PlaylistCallbacksHolder(node::ObjectWrap* userdata, sp_playlist* playlist);
+  PlaylistCallbacksHolder(Nan::ObjectWrap* userdata, sp_playlist* playlist);
   ~PlaylistCallbacksHolder();
 
   //libspotify callback functions.
