@@ -47,6 +47,7 @@
           "GCC_ENABLE_CPP_EXCEPTIONS": 'YES',
           "MACOSX_DEPLOYMENT_TARGET" : "10.8"
         },
+        "include_dirs": ["/usr/local/include"],
         "defines": ["OS_OSX"],
       }],
       [ "OS=='mac' and native_audio=='true'", {

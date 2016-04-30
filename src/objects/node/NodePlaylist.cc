@@ -25,7 +25,7 @@ NAN_SETTER(NodePlaylist::setName) {
 NAN_GETTER(NodePlaylist::getName) {
   NanScope();
   NodePlaylist* nodePlaylist = node::ObjectWrap::Unwrap<NodePlaylist>(args.This());
-  NanReturnValue(NanNew<String>(nodePlaylist->playlist->name().c_str()));
+  NanReturnValue(Nan::New<String>(nodePlaylist->playlist->name().c_str()));
 }
 
 NAN_SETTER(NodePlaylist::setCollaborative) {
@@ -37,36 +37,36 @@ NAN_SETTER(NodePlaylist::setCollaborative) {
 NAN_GETTER(NodePlaylist::getCollaborative) {
   NanScope();
   NodePlaylist* nodePlaylist = node::ObjectWrap::Unwrap<NodePlaylist>(args.This());
-  NanReturnValue(NanNew<Boolean>(nodePlaylist->playlist->isCollaborative()));
+  NanReturnValue(Nan::New<Boolean>(nodePlaylist->playlist->isCollaborative()));
 }
 
 NAN_GETTER(NodePlaylist::getLink) {
   NanScope();
   NodePlaylist* nodePlaylist = node::ObjectWrap::Unwrap<NodePlaylist>(args.This());
-  NanReturnValue(NanNew<String>(nodePlaylist->playlist->link().c_str()));
+  NanReturnValue(Nan::New<String>(nodePlaylist->playlist->link().c_str()));
 }
 
 NAN_GETTER(NodePlaylist::getDescription) {
   NanScope();
   NodePlaylist* nodePlaylist = node::ObjectWrap::Unwrap<NodePlaylist>(args.This());
-  NanReturnValue(NanNew<String>(nodePlaylist->playlist->description().c_str()));
+  NanReturnValue(Nan::New<String>(nodePlaylist->playlist->description().c_str()));
 }
 
 NAN_GETTER(NodePlaylist::getNumTracks) {
   NanScope();
   NodePlaylist* nodePlaylist = node::ObjectWrap::Unwrap<NodePlaylist>(args.This());
-  NanReturnValue(NanNew<Integer>(nodePlaylist->playlist->numTracks()));
+  NanReturnValue(Nan::New<Integer>(nodePlaylist->playlist->numTracks()));
 }
 
 NAN_METHOD(NodePlaylist::getTrack) {
   NanScope();
   NodePlaylist* nodePlaylist = node::ObjectWrap::Unwrap<NodePlaylist>(args.This());
   if(args.Length() < 1 || !args[0]->IsNumber()) {
-    return NanThrowError("getTrack needs a number as its first argument.");
+    return Nan::ThrowError("getTrack needs a number as its first argument.");
   }
   int position = args[0]->ToNumber()->IntegerValue();
   if(position >= nodePlaylist->playlist->numTracks() || position < 0) {
-    return NanThrowError("Track index out of bounds");
+    return Nan::ThrowError("Track index out of bounds");
   }
   std::shared_ptr<TrackExtended> track = nodePlaylist->playlist->getTrack(position);
   NodeTrackExtended* nodeTrack = new NodeTrackExtended(track);
@@ -76,7 +76,7 @@ NAN_METHOD(NodePlaylist::getTrack) {
 NAN_METHOD(NodePlaylist::addTracks) {
   NanScope();
   if(args.Length() < 2 || !args[0]->IsArray() || !args[1]->IsNumber()) {
-    return NanThrowError("addTracks needs an array and a number as its arguments.");
+    return Nan::ThrowError("addTracks needs an array and a number as its arguments.");
   }
   NodePlaylist* nodePlaylist = node::ObjectWrap::Unwrap<NodePlaylist>(args.This());
   Handle<Array> trackArray = Handle<Array>::Cast(args[0]);
@@ -90,7 +90,7 @@ NAN_METHOD(NodePlaylist::addTracks) {
   try {
     nodePlaylist->playlist->addTracks(tracks, position);
   } catch(const TracksNotAddedException& e) {
-    return NanThrowError(e.message.c_str());
+    return Nan::ThrowError(e.message.c_str());
   }
 
   NanReturnUndefined();
@@ -99,7 +99,7 @@ NAN_METHOD(NodePlaylist::addTracks) {
 NAN_METHOD(NodePlaylist::removeTracks) {
   NanScope();
   if(args.Length() < 1 || !args[0]->IsArray()) {
-    return NanThrowError("removeTracks needs an array as its first argument.");
+    return Nan::ThrowError("removeTracks needs an array as its first argument.");
   }
   NodePlaylist* nodePlaylist = node::ObjectWrap::Unwrap<NodePlaylist>(args.This());
   Handle<Array> trackPositionsArray = Handle<Array>::Cast(args[0]);
@@ -110,7 +110,7 @@ NAN_METHOD(NodePlaylist::removeTracks) {
   try {
     nodePlaylist->playlist->removeTracks(trackPositions, trackPositionsArray->Length());
   } catch(const TracksNotRemoveableException& e) {
-    return NanThrowError("Tracks not removeable, permission denied.");
+    return Nan::ThrowError("Tracks not removeable, permission denied.");
   }
 
   NanReturnUndefined();
@@ -119,7 +119,7 @@ NAN_METHOD(NodePlaylist::removeTracks) {
 NAN_METHOD(NodePlaylist::reorderTracks) {
   NanScope();
   if(args.Length() < 2 || !args[0]->IsArray() || !args[1]->IsNumber()) {
-    return NanThrowError("reorderTracks needs an array and a numer as its arguments.");
+    return Nan::ThrowError("reorderTracks needs an array and a numer as its arguments.");
   }
   NodePlaylist* nodePlaylist = node::ObjectWrap::Unwrap<NodePlaylist>(args.This());
   Handle<Array> trackPositionsArray = Handle<Array>::Cast(args[0]);
@@ -131,7 +131,7 @@ NAN_METHOD(NodePlaylist::reorderTracks) {
   try {
     nodePlaylist->playlist->reorderTracks(trackPositions, trackPositionsArray->Length(), newPosition);
   } catch(const TracksNotReorderableException& e) {
-    return NanThrowError(e.message.c_str());
+    return Nan::ThrowError(e.message.c_str());
   }
 
   NanReturnUndefined();
@@ -140,7 +140,7 @@ NAN_METHOD(NodePlaylist::reorderTracks) {
 NAN_GETTER(NodePlaylist::isLoaded) {
   NanScope();
   NodePlaylist* nodePlaylist = node::ObjectWrap::Unwrap<NodePlaylist>(args.This());
-  NanReturnValue(NanNew<Boolean>(nodePlaylist->playlist->isLoaded()));
+  NanReturnValue(Nan::New<Boolean>(nodePlaylist->playlist->isLoaded()));
 }
 
 NAN_GETTER(NodePlaylist::getOwner) {
@@ -160,16 +160,16 @@ NAN_METHOD(NodePlaylist::on) {
   NanScope();
   NodePlaylist* nodePlaylist = node::ObjectWrap::Unwrap<NodePlaylist>(args.This());
   if(args.Length() < 1 || !args[0]->IsObject()) {
-    return NanThrowError("on needs an object as its first argument.");
+    return Nan::ThrowError("on needs an object as its first argument.");
   }
   Handle<Object> callbacks = args[0]->ToObject();
-  Handle<String> playlistRenamedKey = NanNew<String>("playlistRenamed");
-  Handle<String> tracksMovedKey = NanNew<String>("tracksMoved");
-  Handle<String> tracksAddedKey = NanNew<String>("tracksAdded");
-  Handle<String> tracksRemovedKey = NanNew<String>("tracksRemoved");
-  Handle<String> trackCreatedChangedKey = NanNew<String>("trackCreatedChanged");
-  Handle<String> trackSeenChangedKey = NanNew<String>("trackSeenChanged");
-  Handle<String> trackMessageChangedKey = NanNew<String>("trackMessageChanged");
+  Handle<String> playlistRenamedKey = Nan::New<String>("playlistRenamed").ToLocalChecked();
+  Handle<String> tracksMovedKey = Nan::New<String>("tracksMoved").ToLocalChecked();
+  Handle<String> tracksAddedKey = Nan::New<String>("tracksAdded").ToLocalChecked();
+  Handle<String> tracksRemovedKey = Nan::New<String>("tracksRemoved").ToLocalChecked();
+  Handle<String> trackCreatedChangedKey = Nan::New<String>("trackCreatedChanged").ToLocalChecked();
+  Handle<String> trackSeenChangedKey = Nan::New<String>("trackSeenChanged").ToLocalChecked();
+  Handle<String> trackMessageChangedKey = Nan::New<String>("trackMessageChanged").ToLocalChecked();
   nodePlaylist->playlistCallbacksHolder.playlistRenamedCallback = V8Utils::getFunctionFromObject(callbacks, playlistRenamedKey);
   nodePlaylist->playlistCallbacksHolder.tracksAddedCallback = V8Utils::getFunctionFromObject(callbacks, tracksAddedKey);
   nodePlaylist->playlistCallbacksHolder.tracksMovedCallback = V8Utils::getFunctionFromObject(callbacks, tracksMovedKey);
@@ -190,18 +190,18 @@ NAN_METHOD(NodePlaylist::off) {
 
 void NodePlaylist::init() {
   NanScope();
-  Local<FunctionTemplate> constructorTemplate = NanNew<FunctionTemplate>();
-  constructorTemplate->SetClassName(NanNew<String>("Playlist"));
+  Local<FunctionTemplate> constructorTemplate = Nan::New<FunctionTemplate>();
+  constructorTemplate->SetClassName(Nan::New<String>("Playlist").ToLocalChecked());
   constructorTemplate->InstanceTemplate()->SetInternalFieldCount(1);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "on", on);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "off", off);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("name"), getName, setName);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("collaborative"), getCollaborative, setCollaborative);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("link"), getLink);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("description"), getDescription);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("isLoaded"), isLoaded);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("owner"), getOwner);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("numTracks"), getNumTracks);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("name").ToLocalChecked(), getName, setName);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("collaborative").ToLocalChecked(), getCollaborative, setCollaborative);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("link").ToLocalChecked(), getLink);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("description").ToLocalChecked(), getDescription);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("isLoaded").ToLocalChecked(), isLoaded);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("owner").ToLocalChecked(), getOwner);
+  constructorTemplate->InstanceTemplate()->SetAccessor(Nan::New<String>("numTracks").ToLocalChecked(), getNumTracks);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "getTrack", getTrack);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "addTracks", addTracks);
   NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "removeTracks", removeTracks);
